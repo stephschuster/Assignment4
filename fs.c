@@ -532,7 +532,7 @@ dirlookup(struct inode *dp, char *name, uint *poff)
   if(dp->type != T_DIR && !IS_DEV_DIR(dp))
     panic("dirlookup not DIR");
 
-  for(off = 0; off < dp->size; off += sizeof(de)){
+  for(off = 0; off < dp->size || dp->type == T_DEV ; off += sizeof(de)){
     if(readi(dp, (char*)&de, off, sizeof(de)) != sizeof(de)) {
       if (dp->type == T_DEV)
         return 0;
