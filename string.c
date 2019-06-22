@@ -103,3 +103,21 @@ strlen(const char *s)
   return n;
 }
 
+
+void
+itoa(int num, char *buf){
+  static char digits[] = "0123456789";
+  int i = 0;
+  char tmp;
+
+  do{
+    buf[i++] = digits[num % 10];
+  }while((num /= 10) != 0);
+  buf[i] = '\0';
+
+  for (i = 0; i < strlen(buf) / 2; i++){
+    tmp = buf[i];
+    buf[i] = buf[strlen(buf) - i - 1];
+    buf[strlen(buf) - i - 1] = tmp;
+  }
+}

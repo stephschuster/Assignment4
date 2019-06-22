@@ -155,3 +155,63 @@ filewrite(struct file *f, char *addr, int n)
   panic("filewrite");
 }
 
+
+
+int
+getFilestatInfo(char* buf){
+  uint freeFds = 0;
+  uint fdsInUse = 0;
+  uint numOfRefs = 0;
+  uint uniqueInode = 0;
+  uint writeableFds = 0;
+  uint readableFds = 0;
+  int foundInodes[NINODE];
+  int found = 0;
+  struct file *f;
+
+  memset(foundInodes, 0 , NINODE);
+  acquire(&ftable.lock);
+  for(f = ftable.file; f < ftable.file + NFILE; f++){
+    found = 0;
+    if(f->ref == 0){
+      freeFds++;
+    }else{
+      fdsInUse++;
+      if(f->readable){
+        readableFds++;
+      }
+      if(f->writable){
+        writeableFds++;
+      }
+      int i;
+      for(i = 0 ; foundInodes[i] ; i ++ ){
+        if(foundInodes[i] == f->ip->inum){
+          found = 1;
+        }
+      }
+      if(!found){
+        uniqueInode++;
+        foundInodes[i] = f->ip->inum;
+      }
+      numOfRefs += f->ref;
+      
+    }
+  }
+  release(&ftable.lock);
+  strncpy(buf, "Free fds: ", strlen("Free fds: "));
+  itoa(freeFds, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\nUnique inode fds: ", strlen("\nUnique inode fds:  "));
+  itoa(uniqueInode, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\nWriteable fds: ", strlen("\nWriteable fds:  "));
+  itoa(writeableFds, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\nReadable fds: ", strlen("\nReadable fds:  "));
+  itoa(readableFds, buf + strlen(buf));
+
+  uint refPerFds = 0;
+  refPerFds = numOfRefs/fdsInUse;
+  strncpy(buf + strlen(buf), "\nRefs per fds: ", strlen("\nRefs per fds:  "));
+  itoa(refPerFds, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\n", strlen("\n"));
+
+  return strlen(buf);
+}

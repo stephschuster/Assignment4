@@ -34,6 +34,8 @@ int             fileread(struct file*, char*, int n);
 int             filestat(struct file*, struct stat*);
 int             filewrite(struct file*, char*, int n);
 
+int             getFilestatInfo(char*);
+
 // fs.c
 void            readsb(int dev, struct superblock *sb);
 int             dirlink(struct inode*, char*, uint);
@@ -53,10 +55,14 @@ int             readi(struct inode*, char*, uint, uint);
 void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, char*, uint, uint);
 
+void            findOpenInode(int*);
+int             getInodeInfo(char* , int);
 // ide.c
 void            ideinit(void);
 void            ideintr(void);
 void            iderw(struct buf*);
+
+int             getIdeInfo(char*);
 
 // ioapic.c
 void            ioapicenable(int irq, int cpu);
@@ -121,6 +127,8 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 
+void            tryToAcquire(void);
+void            tryToRelease(void);
 // procfs.c
 void            procfsinit(void);
 
@@ -150,6 +158,8 @@ char*           safestrcpy(char*, const char*, int);
 int             strlen(const char*);
 int             strncmp(const char*, const char*, uint);
 char*           strncpy(char*, const char*, int);
+
+void            itoa(int , char *);
 
 // syscall.c
 int             argint(int, int*);

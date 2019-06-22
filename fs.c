@@ -169,6 +169,12 @@ struct {
   struct inode inode[NINODE];
 } icache;
 
+static char *ip_types[] = {
+    [T_DIR]  "DIR",
+    [T_FILE] "FILE",
+    [T_DEV]  "DEV "   // an on-disk inode
+};
+
 void
 iinit(int dev)
 {
@@ -531,7 +537,6 @@ dirlookup(struct inode *dp, char *name, uint *poff)
 
   if(dp->type != T_DIR && !IS_DEV_DIR(dp))
     panic("dirlookup not DIR");
-
   for(off = 0; off < dp->size || dp->type == T_DEV ; off += sizeof(de)){
     if(readi(dp, (char*)&de, off, sizeof(de)) != sizeof(de)) {
       if (dp->type == T_DEV)
@@ -677,3 +682,61 @@ nameiparent(char *path, char *name)
 {
   return namex(path, 1, name);
 }
+
+
+int
+getInodeInfo(char* buf , int inodeIndex){
+  struct inode * ip = &icache.inode[inodeIndex];
+  int blocksInUse = 0;
+  int i, j;
+  uint *indirectBlocks;
+  struct buf *indirectBuf;
+  if(ip->type != T_DEV){
+    for(i = 0; i < NDIRECT; i++){
+      if(ip->addrs[i] != 0){
+        blocksInUse++;
+      } 
+    }
+    if(ip->addrs[NDIRECT] != 0){
+      indirectBuf = bread(ip->dev, ip->addrs[NDIRECT]);
+      indirectBlocks = (uint*)indirectBuf->data;
+      for(j = 0; j < NINDIRECT; j++){
+        if(indirectBlocks[j] != 0){
+          blocksInUse++;
+        }
+      }
+    }
+  }
+  strncpy(buf, "Device: ", strlen("Device: "));
+  itoa(ip->dev, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\nInode number: ", strlen("\nInode number: "));
+  itoa(ip->inum, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\nis valid: ", strlen("\nis valid: "));
+  itoa(ip->valid, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\ntype: ", strlen("\ntype: "));
+  strncpy(buf + strlen(buf), ip_types[ip->type], strlen(ip_types[ip->type]));
+  strncpy(buf + strlen(buf), "\nmajor minor: (", strlen("\nmajor minor: ("));
+  itoa(ip->major, buf + strlen(buf));
+  strncpy(buf + strlen(buf), ",", strlen(","));
+  itoa(ip->minor, buf + strlen(buf));
+  strncpy(buf + strlen(buf), ")", strlen(")"));
+  strncpy(buf + strlen(buf), "\nhard links: ", strlen("\nhard links: "));
+  itoa(ip->nlink, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\nblocks used: ", strlen("\nblocks used: "));
+  itoa(blocksInUse, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\n", strlen("\n"));
+  return strlen(buf);
+}
+
+void
+findOpenInode(int* openInodes) {
+  int j = 0;
+  for (int i = 0; i < NINODE; i++) {
+    if (icache.inode[i].ref != 0) {
+      openInodes[j] = i + 1;
+      j++;
+    }
+  }
+}
+
+

@@ -496,6 +496,15 @@ kill(int pid)
   return -1;
 }
 
+
+void
+tryToAcquire(){
+  acquire(&ptable.lock);
+}
+void
+tryToRelease(){
+  release(&ptable.lock);
+}
 //PAGEBREAK: 36
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.
