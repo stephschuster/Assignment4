@@ -166,3 +166,40 @@ iderw(struct buf *b)
 
   release(&idelock);
 }
+
+
+int
+getIdeInfo(char* buf){
+  struct buf *b;
+  int numOfRead = 0;
+  int numOfWrite = 0;
+  int totalWaiting = 0;
+  char workingBlocks[PGSIZE];
+
+  memset(workingBlocks, '\0' , PGSIZE);
+  acquire(&idelock);
+  for(b=idequeue; b; b= b->qnext){
+    strncpy(workingBlocks + strlen(workingBlocks), "(", strlen("("));
+    itoa(b->dev, workingBlocks + strlen(workingBlocks));
+    strncpy(workingBlocks + strlen(workingBlocks), ",", strlen(","));
+    itoa(b->blockno, workingBlocks + strlen(workingBlocks));
+    strncpy(workingBlocks + strlen(workingBlocks), ");", strlen(");"));
+    totalWaiting++;
+    if(b->flags & B_DIRTY){
+      numOfWrite++;
+    }
+    if(b->flags & B_VALID){
+      numOfRead++;
+    }
+  }
+  strncpy(buf, "Waiting operations: ", strlen("Waiting operations:  "));
+  itoa(totalWaiting, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\nRead waiting operations: ", strlen("\nRead waiting operations:  "));
+  itoa(numOfRead, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\nWrite waiting operations: ", strlen("\nWrite waiting operations:  "));
+  itoa(numOfWrite, buf + strlen(buf));
+  strncpy(buf + strlen(buf), "\n", strlen("\n"));
+  strncpy(buf + strlen(buf), workingBlocks, strlen(workingBlocks));
+  release(&idelock);
+  return strlen(buf);
+}
