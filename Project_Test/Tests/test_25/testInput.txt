@@ -1,0 +1,4 @@
+
+generalcheck24
+
+quitXV6

@@ -1,0 +1,29 @@
+@
+1
+generalcheck37 test starting...
+1
+generalcheck37 test exiting...
+1
+proc
+1
+echo
+1
+ls
+1
+console
+0
+error reading
+0
+error writing
+0
+ls: cannot open
+0
+ls: cannot stat
+0
+ls: path too long
+0
+fork failed
+0
+cannot stat
+0
+not a device file

@@ -1,0 +1,31 @@
+@
+1
+generalcheck17 test starting...
+1
+generalcheck17 test exiting...
+0
+error reading
+0
+error writing
+0
+ls: cannot open
+0
+ls: cannot stat
+0
+ls: path too long
+0
+fork failed
+0
+cannot stat
+0
+not a device file
+400
+sleep
+0
+error process file can be read after its has exited !!!
+0
+error process dir can be read after its has exited !!!
+400
+name
+400
+status

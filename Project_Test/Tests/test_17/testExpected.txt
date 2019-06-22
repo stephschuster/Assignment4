@@ -1,0 +1,33 @@
+@
+1
+generalcheck16 test starting...
+1
+generalcheck16 test exiting...
+0
+error reading
+0
+error writing
+0
+ls: cannot open
+0
+ls: cannot stat
+0
+ls: path too long
+0
+fork failed
+0
+cannot stat
+0
+not a device file
+0
+size1
+0
+size2
+0
+size3
+30
+409600
+30
+819200
+30
+1228800

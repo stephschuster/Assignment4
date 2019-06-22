@@ -1,0 +1,4 @@
+
+generalcheck32
+
+quitXV6

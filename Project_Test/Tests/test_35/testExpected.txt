@@ -1,0 +1,27 @@
+@
+1
+generalcheck34 test starting...
+1
+generalcheck34 test exiting...
+1
+ideinfo
+1
+filestat
+1
+inodeinfo
+0
+error reading
+0
+error writing
+0
+ls: cannot open
+0
+ls: cannot stat
+0
+ls: path too long
+0
+fork failed
+0
+cannot stat
+0
+not a device file
