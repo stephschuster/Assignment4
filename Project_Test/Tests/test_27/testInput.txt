@@ -1,4 +1,0 @@
-
-generalcheck26
-
-quitXV6
