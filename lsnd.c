@@ -26,11 +26,11 @@ main(void){
             }
             close(fd);
             for(j = 0 ; j < strlen(helpBuff) ; j ++){
-                if((helpBuff[j] >= '0') && (helpbuff[j] <= '9')){
-                    printBuff[offset] = helpbuff[j];
+                if((helpBuff[j] >= '0') && (helpBuff[j] <= '9')){
+                    printBuff[offset] = helpBuff[j];
                     offset++;
-                }else if((helpbuff[j] >= 'A') && (helpBuff[j] <= 'Z')){
-                    printBuff[offset] = helpbuff[j];
+                }else if((helpBuff[j] >= 'A') && (helpBuff[j] <= 'Z')){
+                    printBuff[offset] = helpBuff[j];
                     offset++;
                 }else if(helpBuff[j] == '\n'){
                     printBuff[offset] = ' ';
